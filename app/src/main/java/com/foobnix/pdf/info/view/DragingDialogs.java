@@ -1991,6 +1991,33 @@ public class DragingDialogs {
                     }
                 });
 
+                view.findViewById(R.id.onEdit).setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder editBuilder = new AlertDialog.Builder(controller.getActivity());
+                        View editView = LayoutInflater.from(controller.getActivity()).inflate(R.layout.dialog_edit_text, null);
+                        EditText editText2 = editView.findViewById(R.id.editText2);
+                        Button saveButton = editView.findViewById(R.id.saveButton);
+                        ImageView closeButton = editView.findViewById(R.id.close);
+
+                        String currentText = editText.getText().toString();
+                        editText2.setText(currentText);
+                        
+                        AlertDialog editDialog = editBuilder.setView(editView).create();
+
+                        closeButton.setOnClickListener(button -> editDialog.dismiss());
+                        saveButton.setOnClickListener(button -> {
+                            // TODO: Implement updateSelectedText functionality
+                            // controller.updateSelectedText(editText2.getText().toString());
+                            editDialog.dismiss();
+                            closeDialog();
+                        });
+
+                        editDialog.show();
+                    }
+                });
+
                 View onBookSearch = view.findViewById(R.id.onBookSearch);
                 // onBookSearch.setText(controller.getString(R.string.search_in_the_book)
                 // + " \"" + AppState.get().selectedText + "\"");

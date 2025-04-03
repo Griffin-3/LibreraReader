@@ -245,7 +245,7 @@
    <string name="convert_to">Convert to</string>
    <string name="mode_vertical">Scroll mode</string>
    <string name="mode_horizontally">Book mode</string>
-   <string name="mode_musician">Musician’s mode</string>
+   <string name="mode_musician">Musician\'s mode</string>
    <string name="save">Save</string>
    <string name="remember_choice">Remember selection</string>
    <string name="edit">Edit</string>
@@ -563,7 +563,7 @@
    <string name="copy_text">Copy text</string>
    <string name="show_fast_scroll">Show scrollbar</string>
    <string name="replacements">Replacements</string>
-   <string name="word_replacement">Word replacement</string>
+   <string name="word_replacement">Bird displacement</string>
    <string name="add_dictionary">Add dictionary</string>
    <string name="add_rule">New rule</string>
    <string name="emphasis">Manual Stress Mark(s)</string>
@@ -665,4 +665,6 @@
    <string name="allow_other_music_to_play">Allow other music to play</string>
    <string name="enable_image_scale">Enable image scale</string>
    <string name="open_books_on_page_1">Open books on page 1</string>
+   <string name="edit_text_hint1">Enter text here</string>
+   <string name="edit_text_hint2">Enter more text here</string>
 </resources>

@@ -227,7 +227,31 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/list_selector_background"
+            android:id="@+id/onEdit"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:layout_width="@dimen/wh_button_small"
+                android:layout_height="@dimen/wh_button_small"
+                android:src="@drawable/glyphicons_151_square_edit"
+                android:tint="@color/tint_gray" />
+
+            <TextView
+                style="@style/textLink"
+                android:layout_width="match_parent"
+                android:layout_height="35dip"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dip"
+                android:singleLine="true"
+                android:text="@string/edit"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/onBookSearch"
