@@ -142,7 +142,7 @@ android {
                     appName      : "Librera",
                     appIcon      : "@mipmap/icon_pdf_pro",
                     appRoundIcon : "@mipmap/icon_pdf_pro",
-//                    appGdriveKey : pro_appGdriveKey,
+                    appGdriveKey : "", //--TESTING--// pro_appGdriveKey,
                     admobAppId   : "",
                     admobBannerId: "",
                     admobFullId  : "",
