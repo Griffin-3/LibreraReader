@@ -97,6 +97,107 @@ public class MuPdfDocument extends AbstractCodecDocument {
 
     private native static String setMetaData(long docHandle, final String key, String value);
 
+    private static long openFile(final int format, String fname, final String pwd, String css) {
+        TempHolder.lock.lock();
+        try {
+            int allocatedMemory = AppState.get().allocatedMemorySize * 1024 * 1024;
+            // int allocatedMemory = CoreSettings.get().pdfStorageSize;
+            LOG.d("allocatedMemory", AppState.get().allocatedMemorySize, " MB " + allocatedMemory);
+            int isImageScale = AppState.get().enableImageScale ? 1 : 0;
+
+            LOG.d("accel cache1", fname);
+            String accel = new EpubContext().getCacheFileName(fname).getPath() + "+accel";
+            accel = accel.replace(CacheZipUtils.CACHE_BOOK_DIR.getPath(), CacheZipUtils.CACHE_TEMP.getPath());
+            LOG.d("accel cache2", accel, new File(accel).exists());
+
+            final long open = open(allocatedMemory, format, fname, pwd, css, BookCSS.get().documentStyle == BookCSS.STYLES_ONLY_USER ? 0 : 1, BookCSS.get().imageScale, AppState.get().antiAliasLevel, accel, isImageScale);
+            LOG.d("TEST", "Open document " + fname + " " + open);
+            LOG.d("TEST", "Open document css ", css);
+            LOG.d("TEST", "Open document isImageScale ", isImageScale);
+            LOG.d("MUPDF! >>> open [document]", open, ExtUtils.getFileName(fname));
+
+
+            if (open == -1) {
+                throw new RuntimeException("Document is corrupted");
+            }
+
+            // final int n = getPageCountWithException(open);
+            return open;
+        } finally {
+            TempHolder.lock.unlock();
+        }
+    }
+
+    public static native String getFzVersion();
+
+    private static native long open(int storememory, int format, String fname, String pwd, String css, int useDocStyle, float scale, int antialias, String accel, int isImageScale);
+
+    private static native void free(long handle);
+
+    private static int getPageCountWithException(final long handle, int w, int h, int size) {
+        final int count = getPageCountSafe(handle, w, h, Dips.spToPx(size));
+//        if (count == 0) {
+//            throw new RuntimeException("Document is corrupted");
+//        }
+        return count;
+    }
+
+    private static int getPageCountSafe(long handle, int w, int h, int size) {
+        LOG.d("getPageCountSafe w h size", w, h, size);
+
+        if (handle == cacheHandle && size == cacheSize && w + h == cacheWH) {
+            LOG.d("getPageCount from cache", cacheCount);
+            return cacheCount;
+        }
+        TempHolder.lock.lock();
+        try {
+            cacheHandle = handle;
+            cacheSize = size;
+            cacheWH = w + h;
+            cacheCount = getPageCount(handle, w, h, size);
+            LOG.d("getPageCount put to cache", cacheCount);
+            return cacheCount;
+        } catch (Exception e) {
+            return -1;
+        } finally {
+            TempHolder.lock.unlock();
+        }
+    }
+
+    private static native int getPageCount(long handle, int w, int h, int size);
+
+    public String getPath() {
+        return fname;
+    }
+
+    @Override
+    public void setMeta(String key, String value) {
+        TempHolder.lock.lock();
+        try {
+            LOG.d(this.getClass(), "setMetaData", key, value);
+            setMetaData(documentHandle, key, value);
+        } finally {
+            TempHolder.lock.unlock();
+        }
+    }
+
+    @Override
+    public BookType getBookType() {
+        return bookType;
+    }
+
+    @Override
+    public String documentToHtml() {
+        StringBuilder out = new StringBuilder();
+        int pages = getPageCount();
+        for (int i = 0; i < pages; i++) {
+            CodecPage pageCodec = getPage(i);
+            String pageHTML = pageCodec.getPageHTML();
+            out.append(pageHTML);
+        }
+        return out.toString();
+    }
+
     @Override
     public Map<String, String> getFootNotes() {
         return footNotes;
@@ -234,6 +335,16 @@ public class MuPdfDocument extends AbstractCodecDocument {
     @Override
     public String getBookAuthor() {
         return getMeta("info:Author");
+    }
+
+    @Override
+    public List<String> getMetaKeys() {
+        // MuPDF doesn't provide a direct way to get all meta keys
+        // Return a list of known MuPDF meta keys
+        return java.util.Arrays.asList(
+            "info:Title", "info:Author", "info:Subject", "info:Keywords",
+            "info:Creator", "info:Producer", "info:CreationDate", "info:ModDate"
+        );
     }
 
     private native void saveInternal(long handle, String path);
