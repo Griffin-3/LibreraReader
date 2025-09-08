@@ -519,7 +519,7 @@ public class HorizontalViewActivity extends AdsFragmentActivity {
         onTextReplacement.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                DragingDialogs.textReplaces(anchor, dc);
+                Toast.makeText(HorizontalViewActivity.this, "editing clicked", Toast.LENGTH_SHORT).show();
             }
         });
         Views.visible(onTextReplacement, isTextFomat);

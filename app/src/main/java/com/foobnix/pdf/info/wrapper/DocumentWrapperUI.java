@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -1117,7 +1118,7 @@ public class DocumentWrapperUI {
         fullscreen.setImageResource(DocumentController.getFullScreenIcon(a, AppState.get().fullScreenMode));
 
         onTextReplacement = a.findViewById(R.id.onTextReplacement);
-        onTextReplacement.setOnClickListener(v -> DragingDialogs.textReplaces(anchor, dc));
+        onTextReplacement.setOnClickListener(v -> Toast.makeText(a, "editing clicked", Toast.LENGTH_SHORT).show());
 
 
         onCloseBook = a.findViewById(R.id.close);
